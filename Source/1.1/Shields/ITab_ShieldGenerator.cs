@@ -80,11 +80,11 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
 
             listing_Standard.GapLine(12f);
-            listing_Standard.Label("Charge: " + this.SelectedCompShieldGenerator.FieldIntegrity_Current + " / " + this.SelectedCompShieldGenerator.m_FieldIntegrity_Max);
+            listing_Standard.Label("护盾能量: " + (int)this.SelectedCompShieldGenerator.FieldIntegrity_Current + " / " + this.SelectedCompShieldGenerator.m_FieldIntegrity_Max);
 
             listing_Standard.Gap(12f);
 
-            listing_Standard.Label("Radius: " + this.SelectedCompShieldGenerator.m_FieldRadius_Requested + " / " + this.SelectedCompShieldGenerator.m_FieldRadius_Avalable);
+            listing_Standard.Label("护盾半径: " + this.SelectedCompShieldGenerator.m_FieldRadius_Requested + " / " + this.SelectedCompShieldGenerator.m_FieldRadius_Avalable);
             listing_Standard.IntAdjuster(ref this.SelectedCompShieldGenerator.m_FieldRadius_Requested, 1, 1);
             if (this.SelectedCompShieldGenerator.m_FieldRadius_Requested > this.SelectedCompShieldGenerator.m_FieldRadius_Avalable)
             {
@@ -94,14 +94,14 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             //Direct
             if (this.SelectedCompShieldGenerator.BlockDirect_Active())
             {
-                if (listing_Standard.ButtonText("Toggle Direct: Active"))
+                if (listing_Standard.ButtonText("阻挡子弹:开启"))
                 {
                     this.SelectedCompShieldGenerator.SwitchDirect();
                 }
             } 
             else
             {
-                if (listing_Standard.ButtonText("Toggle Direct: Inactive"))
+                if (listing_Standard.ButtonText("阻挡子弹:关闭"))
                 {
                     this.SelectedCompShieldGenerator.SwitchDirect();
                 }
@@ -111,14 +111,14 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             //Indirect
             if (this.SelectedCompShieldGenerator.BlockIndirect_Active())
             {
-                if (listing_Standard.ButtonText("Toggle Indirect: Active"))
+                if (listing_Standard.ButtonText("阻挡炮弹:开启"))
                 {
                     this.SelectedCompShieldGenerator.SwitchIndirect();
                 }
             }
             else
             {
-                if (listing_Standard.ButtonText("Toggle Indirect: Inactive"))
+                if (listing_Standard.ButtonText("阻挡炮弹:关闭"))
                 {
                     this.SelectedCompShieldGenerator.SwitchIndirect();
                 }
@@ -129,14 +129,14 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             {
                 if (this.SelectedCompShieldGenerator.IntercepDropPod_Active())
                 {
-                    if (listing_Standard.ButtonText("Toggle DropPod Intercept: Active"))
+                    if (listing_Standard.ButtonText("阻挡空投仓:开启"))
                     {
                         this.SelectedCompShieldGenerator.SwitchInterceptDropPod();
                     }
                 }
                 else
                 {
-                    if (listing_Standard.ButtonText("Toggle DropPod Intercept: Inactive"))
+                    if (listing_Standard.ButtonText("阻挡空投仓:关闭"))
                     {
                         this.SelectedCompShieldGenerator.SwitchInterceptDropPod();
                     }
@@ -146,17 +146,17 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             }
             else
             {
-                listing_Standard.Label("DropPod Intercept Unavalable");
+                listing_Standard.Label("阻挡空投仓 未升级");
             }
 
             if (this.SelectedCompShieldGenerator.IdentifyFriendFoe_Active())
             {
-                listing_Standard.Label("IFF Active");
+                listing_Standard.Label("区分友军火力 开启");
 
             }
             else
             {
-                listing_Standard.Label("IFF Inactive");
+                listing_Standard.Label("区分友军火力 关闭");
             }
 
             listing_Standard.End();

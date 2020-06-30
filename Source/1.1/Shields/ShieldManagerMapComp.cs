@@ -53,14 +53,18 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
             if (_BlockingShield != null)
             {
-                _BlockingShield.TakeDamageFromProjectile(projectile);
+                //全部转移到hit函数里去处理
+                _BlockingShield.GetComp<Comp_ShieldGenerator>().HitShield(projectile);
+
+
+                //_BlockingShield.TakeDamageFromProjectile(projectile);
 
                 //On hit effects
-                MoteMaker.ThrowLightningGlow(projectile.ExactPosition, this.map, 0.5f);
+                //MoteMaker.ThrowLightningGlow(projectile.ExactPosition, this.map, 0.5f);
                 //On hit sound
-                HitSoundDef.PlayOneShot((SoundInfo)new TargetInfo(projectile.Position, projectile.Map, false));
+                //HitSoundDef.PlayOneShot((SoundInfo)new TargetInfo(projectile.Position, projectile.Map, false));
 
-                projectile.Destroy();
+                //projectile.Destroy();
                 return true;
             }
 

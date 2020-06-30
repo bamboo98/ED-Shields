@@ -34,10 +34,11 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             return this.GetComp<Comp_ShieldGenerator>().WillProjectileBeBlocked(projectileToCheck);
         }
 
-        public void TakeDamageFromProjectile(Projectile projectile)
-        {
-            this.GetComp<Comp_ShieldGenerator>().FieldIntegrity_Current -= projectile.DamageAmount;
-        }
+        //public void TakeDamageFromProjectile(Projectile projectile)
+        //{
+        //    this.GetComp<Comp_ShieldGenerator>().HitShield(projectile);
+
+        //}
 
         public void RecalculateStatistics()
         {

@@ -15,7 +15,11 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             this.compClass = typeof(Comp_ShieldUpgrade);
         }
 
+        public float Field_Recharge_Speed = 0f;
+
+
         public int PowerUsage_Increase = 0;
+        public int PowerUsage_Increase2 = 0;
         public int FieldIntegrity_Increase = 0;
         public int Range_Increase = 0;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using Verse.Sound;
 using RimWorld;
 using UnityEngine;
 using System.Reflection;
@@ -14,7 +15,7 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
     public class Comp_ShieldGenerator : ThingComp
     {
 
-        Material currentMatrialColour;
+        //Material currentMatrialColour;
 
         public CompProperties_ShieldGenerator Properties;
 
@@ -37,13 +38,21 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
         //Visual Settings
         private bool m_ShowVisually_Active = true;
-        private float m_ColourRed;
-        private float m_ColourGreen;
-        private float m_ColourBlue;
+        //private float m_ColourRed;
+        //private float m_ColourGreen;
+        //private float m_ColourBlue;
 
         //Field Settings
         public int m_FieldIntegrity_Max;
         private int m_FieldIntegrity_Initial;
+
+        private float m_RechargeSpeed;
+        private float m_ExtraDamageRateOfEMP;
+        private float m_ExtraDamageRateOfFlame;
+        private float m_DamageRate;
+        private float m_FieldDamageRateOfEMP;
+        private float PowerUsage_Increase2 = 1;
+
 
         //Recovery Settings
         private int m_RechargeTickDelayInterval;
@@ -52,8 +61,13 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
         private List<Building> m_AppliedUpgrades = new List<Building>();
 
+        private static readonly MaterialPropertyBlock PropBlock = new MaterialPropertyBlock();
+        private int lastIntercepted = -69;
+        private float lastInterceptAngle;
+        private static readonly Material ConeMaterial = MaterialPool.MatFrom("Other/ForceFieldCone", ShaderDatabase.MoteGlow);
+        private static readonly Material ShieldMaterial = MaterialPool.MatFrom("Things/ShieldBubbleSOS", ShaderDatabase.MoteGlow);
         #endregion Variables
-        
+
         #region Settings
 
         // Power Usage --------------------------------------------------------------
@@ -164,9 +178,20 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             //Log.Message("RecalculateStatistics");
 
             //Visual Settings
-            this.m_ColourRed = 0.5f;
-            this.m_ColourGreen = 0.0f;
-            this.m_ColourBlue = 0.5f;
+            //this.m_ColourRed = 0.5f;
+            //this.m_ColourGreen = 0.0f;
+            //this.m_ColourBlue = 0.5f;
+
+            PowerUsage_Increase2 = 1;
+
+            //EXtra
+            m_RechargeSpeed = Properties.m_RechargeSpeed;
+            m_ExtraDamageRateOfEMP = Properties.m_ExtraDamageRateOfEMP;
+            m_ExtraDamageRateOfFlame = Properties.m_ExtraDamageRateOfFlame;
+            m_DamageRate = Properties.m_DamageRate;
+            m_FieldDamageRateOfEMP = Properties.m_FieldDamageRateOfEMP;
+
+
 
             //Field Settings
             this.m_FieldIntegrity_Max = this.Properties.m_FieldIntegrity_Max_Base;
@@ -182,7 +207,6 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             this.m_PowerRequired = this.Properties.m_PowerRequired_Charging;
 
             //Recovery Settings
-            this.m_RechargeTickDelayInterval = this.Properties.m_RechargeTickDelayInterval_Base;
             this.m_RecoverWarmupDelayTicks = this.Properties.m_RecoverWarmupDelayTicks_Base;
 
             //Power converter
@@ -203,7 +227,9 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
                 this.AddStatsFromUpgrade(_Comp);
 
+
             });
+            this.m_PowerRequired = (int)Mathf.CeilToInt((float)m_PowerRequired * PowerUsage_Increase2);
 
             this.m_Power.powerOutputInt = -this.m_PowerRequired;
 
@@ -217,19 +243,23 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
             this.m_FieldIntegrity_Max += _Properties.FieldIntegrity_Increase;
             this.m_FieldRadius_Avalable += _Properties.Range_Increase;
-
+            this.m_RechargeSpeed += _Properties.Field_Recharge_Speed;
             //Power
-            this.m_PowerRequired += _Properties.PowerUsage_Increase;
-            
+            m_PowerRequired += _Properties.PowerUsage_Increase;
+            PowerUsage_Increase2 *= (100f + (float)_Properties.PowerUsage_Increase2) / 100f;
+
+
             if (_Properties.DropPodIntercept)
             {
                 this.m_InterceptDropPod_Avalable = true;
+                //this.m_PowerRequired = Mathf.CeilToInt(m_PowerRequired * 1.25f);
             }
 
             if (_Properties.IdentifyFriendFoe)
             {
                 //Log.Message("Setting IFF");
                 this.m_IdentifyFriendFoe_Avalable = true;
+                //this.m_PowerRequired = Mathf.CeilToInt(m_PowerRequired * 1.25f);
             }
 
             if (_Properties.SlowDischarge)
@@ -282,7 +312,7 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                         else
                         {
                             this.CurrentStatus = EnumShieldStatus.ActiveCharging;
-                            this.FieldIntegrity_Current = this.m_FieldIntegrity_Initial;
+                            this.FieldIntegrity_Current = (float)this.m_FieldIntegrity_Initial;
                         }
                     }
                     else
@@ -345,6 +375,51 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             }
         }
 
+        public void HitShield(Projectile proj)
+        {
+
+            this.lastInterceptAngle = Vector3Utility.AngleToFlat(proj.DrawPos, GenThing.TrueCenter(this.parent));
+            this.lastIntercepted = Find.TickManager.TicksGame;
+            float dmg = proj.DamageAmount;
+            if (proj.def.projectile.damageDef == DamageDefOf.EMP)
+            {
+                dmg *= m_ExtraDamageRateOfEMP;
+                dmg += m_FieldIntegrity_Current / 100 * m_FieldDamageRateOfEMP;
+            }
+            else if (proj.def.projectile.damageDef == DamageDefOf.Flame)
+                dmg *= m_ExtraDamageRateOfFlame;
+
+            dmg = Mathf.Max(0, dmg*m_DamageRate/100f);
+
+            //判定为爆炸弹丸
+            if (proj.def.projectile.explosionRadius != 0)
+            {
+                //受到伤害取决于弹丸威力*伤害半径^2
+                dmg *= Mathf.Max(1f, proj.def.projectile.explosionRadius * proj.def.projectile.explosionRadius);
+
+                MoteMaker.ThrowMicroSparks(this.parent.DrawPos, this.parent.Map);
+                GenExplosion.DoExplosion(proj.Position, this.parent.Map, Mathf.Min(proj.def.projectile.explosionRadius * 0.66f, 3f),
+                    DefDatabase<DamageDef>.GetNamed("ED_ShieldExplosion", true),
+                    null, -1, -1f, null, null, null, null, null, 0f, 1, false, null, 0f, 1, 0f, false, null, null);
+                //Log.Message("爆炸伤害:"+ dmg * proj.def.projectile.explosionRadius+" = "+ dmg+" * "+ proj.def.projectile.explosionRadius);
+            }
+            //判定为普通弹丸
+            else
+            {
+
+                //还用旧的伤害效果
+                //On hit effects
+                MoteMaker.ThrowLightningGlow(proj.ExactPosition, this.parent.Map, 0.5f);
+                //On hit sound
+                ShieldManagerMapComp.HitSoundDef.PlayOneShot((SoundInfo)new TargetInfo(proj.Position, proj.Map, false));
+                //Log.Message("子弹伤害:" + dmg );
+
+            }
+            this.FieldIntegrity_Current -= Mathf.CeilToInt(dmg);
+
+            proj.Destroy();
+        }
+
         public bool IsActive()
         {
             //return true;
@@ -367,17 +442,14 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
         public void TickRecharge()
         {
-            if (Find.TickManager.TicksGame % this.m_RechargeTickDelayInterval == 0)
-            {
                 if (this.CurrentStatus == EnumShieldStatus.ActiveCharging)
                 {
-                    this.FieldIntegrity_Current++;
+                this.FieldIntegrity_Current += Mathf.Min((float)this.m_FieldIntegrity_Max, 1000) / 6000f * m_RechargeSpeed;
                 }
                 else if (this.CurrentStatus == EnumShieldStatus.ActiveDischarging)
                 {
-                    this.FieldIntegrity_Current--;
+                    this.FieldIntegrity_Current-= (float)this.m_FieldIntegrity_Max / 6000f * 3f ;
                 }
-            }
         }
 
         public bool WillInterceptDropPod(DropPodIncoming dropPodToCheck)
@@ -516,7 +588,7 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
         }
         private EnumShieldStatus m_CurrentStatus = EnumShieldStatus.Offline;
 
-        public int FieldIntegrity_Current
+        public float FieldIntegrity_Current
         {
             get
             {
@@ -539,18 +611,74 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                 }
             }
         }
-        private int m_FieldIntegrity_Current;
+        private float m_FieldIntegrity_Current;
 
         #endregion Properties
 
         #region Drawing
+
+        public float Alpha()
+        {
+            if (this.IsActive())
+            {
+                float baseAlpha;
+                if (Find.Selector.IsSelected(this.parent))
+                {
+                    baseAlpha = Mathf.Lerp(0.5f, 1f, (Mathf.Sin((float)(Gen.HashCombineInt(this.parent.thingIDNumber, 42069) % 100) + Time.realtimeSinceStartup * 2f) + 1f) / 2f);
+                }
+                else
+                {
+                    baseAlpha = Mathf.Lerp(0.25f, 0.75f, (Mathf.Sin((float)(Gen.HashCombineInt(this.parent.thingIDNumber, 69420) % 100) + Time.realtimeSinceStartup * 0.7f) + 1f) / 2f);
+                }
+                int num = Find.TickManager.TicksGame - this.lastIntercepted;
+                float interceptAlpha = Mathf.Clamp01(1f - (float)num / 120f) * 0.99f;
+                return Mathf.Max(baseAlpha, interceptAlpha);
+            }
+            if (!Find.Selector.IsSelected(this.parent))
+            {
+                return 0f;
+            }
+            return 0.5f;
+        }
+        private float HitConeAlpha()
+        {
+            int num = Find.TickManager.TicksGame - this.lastIntercepted;
+            return Mathf.Clamp01(1f - (float)num / 42f) * 0.99f;
+        }
 
         public override void PostDraw()
         {
             //Log.Message("DrawComp");
             base.PostDraw();
 
-            this.DrawShields();
+            if (!this.IsActive() || !this.m_ShowVisually_Active)
+            {
+                return;
+            }
+            Vector3 pos = this.parent.Position.ToVector3Shifted();
+            pos.y = Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead);
+            float alpha = this.Alpha();
+            int radius = this.FieldRadius_Active();
+            if (alpha > 0f)
+            {
+                Color value = Color.white;
+                value.a *= alpha;
+                Comp_ShieldGenerator.PropBlock.SetColor(ShaderPropertyIDs.Color, value);
+                Matrix4x4 matrix = default(Matrix4x4);
+                matrix.SetTRS(pos, Quaternion.identity, new Vector3(radius * 2.1f, 1f, radius * 2.1f));
+                Graphics.DrawMesh(MeshPool.plane10, matrix, Comp_ShieldGenerator.ShieldMaterial, 0, null, 0, Comp_ShieldGenerator.PropBlock);
+            }
+            float coneAlpha = this.HitConeAlpha();
+            if (coneAlpha > 0f)
+            {
+                Color color = Color.white;
+                color.a *= coneAlpha;
+                Comp_ShieldGenerator.PropBlock.SetColor(ShaderPropertyIDs.Color, color);
+                Matrix4x4 matrix2 = default(Matrix4x4);
+                matrix2.SetTRS(pos, Quaternion.Euler(0f, this.lastInterceptAngle - 90f, 0f), new Vector3(radius * 2.3f, 1f, radius * 2.3f));
+                Graphics.DrawMesh(MeshPool.plane10, matrix2, Comp_ShieldGenerator.ConeMaterial, 0, null, 0, Comp_ShieldGenerator.PropBlock);
+            }
+            //this.DrawShields();
 
 
         }
@@ -558,52 +686,52 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
         /// <summary>
         /// Draw the shield Field
         /// </summary>
-        public void DrawShields()
-        {
-            if (!this.IsActive() || !this.m_ShowVisually_Active)
-            {
-                return;
-            }
+        //public void DrawShields()
+        //{
+        //    if (!this.IsActive() || !this.m_ShowVisually_Active)
+        //    {
+        //        return;
+        //    }
 
-            //Draw field
-            this.DrawField(Jaxxa.EnhancedDevelopment.Shields.Shields.Utilities.VectorsUtils.IntVecToVec(this.parent.Position));
+        //    //Draw field
+        //    this.DrawField(Jaxxa.EnhancedDevelopment.Shields.Shields.Utilities.VectorsUtils.IntVecToVec(this.parent.Position));
 
-        }
+        //}
 
         //public override void DrawExtraSelectionOverlays()
         //{
         //    //    GenDraw.DrawRadiusRing(base.Position, shieldField.shieldShieldRadius);
         //}
 
-        public void DrawSubField(IntVec3 center, float radius)
-        {
-            this.DrawSubField(Jaxxa.EnhancedDevelopment.Shields.Shields.Utilities.VectorsUtils.IntVecToVec(center), radius);
-        }
+        //public void DrawSubField(IntVec3 center, float radius)
+        //{
+        //    this.DrawSubField(Jaxxa.EnhancedDevelopment.Shields.Shields.Utilities.VectorsUtils.IntVecToVec(center), radius);
+        //}
 
-        //Draw the field on map
-        public void DrawField(Vector3 center)
-        {
-            DrawSubField(center, this.FieldRadius_Active());
-        }
+        ////Draw the field on map
+        //public void DrawField(Vector3 center)
+        //{
+        //    DrawSubField(center, this.FieldRadius_Active());
+        //}
 
-        public void DrawSubField(Vector3 position, float shieldShieldRadius)
-        {
-            position = position + (new Vector3(0.5f, 0f, 0.5f));
+        //public void DrawSubField(Vector3 position, float shieldShieldRadius)
+        //{
+        //    position = position + (new Vector3(0.5f, 0f, 0.5f));
 
-            Vector3 s = new Vector3(shieldShieldRadius, 1f, shieldShieldRadius);
-            Matrix4x4 matrix = default(Matrix4x4);
-            matrix.SetTRS(position, Quaternion.identity, s);
+        //    Vector3 s = new Vector3(shieldShieldRadius, 1f, shieldShieldRadius);
+        //    Matrix4x4 matrix = default(Matrix4x4);
+        //    matrix.SetTRS(position, Quaternion.identity, s);
 
-            if (currentMatrialColour == null)
-            {
-                //Log.Message("Creating currentMatrialColour");
-                currentMatrialColour = SolidColorMaterials.NewSolidColorMaterial(new Color(m_ColourRed, m_ColourGreen, m_ColourBlue, 0.15f), ShaderDatabase.MetaOverlay);
-                //currentMatrialColour = SolidColorMaterials.NewSolidColorMaterial(new Color(0.5f, 0.0f, 0.0f, 0.15f), ShaderDatabase.MetaOverlay);
-            }
+        //    if (currentMatrialColour == null)
+        //    {
+        //        //Log.Message("Creating currentMatrialColour");
+        //        currentMatrialColour = SolidColorMaterials.NewSolidColorMaterial(new Color(m_ColourRed, m_ColourGreen, m_ColourBlue, 0.15f), ShaderDatabase.MetaOverlay);
+        //        //currentMatrialColour = SolidColorMaterials.NewSolidColorMaterial(new Color(0.5f, 0.0f, 0.0f, 0.15f), ShaderDatabase.MetaOverlay);
+        //    }
 
-            UnityEngine.Graphics.DrawMesh(Jaxxa.EnhancedDevelopment.Shields.Shields.Utilities.Graphics.CircleMesh, matrix, currentMatrialColour, 0);
+        //    UnityEngine.Graphics.DrawMesh(Jaxxa.EnhancedDevelopment.Shields.Shields.Utilities.Graphics.CircleMesh, matrix, currentMatrialColour, 0);
 
-        }
+        //}
 
         #endregion Drawing
 
@@ -617,17 +745,17 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
             if (this.IsActive())
             {
-                _StringBuilder.AppendLine("Shield: " + this.FieldIntegrity_Current + "/" + this.m_FieldIntegrity_Max);
+                _StringBuilder.AppendLine("充能: " + (int)this.FieldIntegrity_Current + "/" + this.m_FieldIntegrity_Max);
             }
             else if (this.CurrentStatus == EnumShieldStatus.Initilising)
             {
                 //stringBuilder.AppendLine("Initiating shield: " + ((warmupTicks * 100) / recoverWarmup) + "%");
-                _StringBuilder.AppendLine("Ready in " + Math.Round(GenTicks.TicksToSeconds(m_WarmupTicksRemaining)) + " seconds.");
+                _StringBuilder.AppendLine(Math.Round(GenTicks.TicksToSeconds(m_WarmupTicksRemaining)) + "秒后启动");
                 //stringBuilder.AppendLine("Ready in " + m_warmupTicksCurrent + " seconds.");
             }
             else
             {
-                _StringBuilder.AppendLine("Shield disabled!");
+                _StringBuilder.AppendLine("护盾关闭,无电源");
             }
 
             if (m_Power != null)
@@ -670,8 +798,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchDirect();
                     act.icon = UI_DIRECT_ON;
-                    act.defaultLabel = "Block Direct";
-                    act.defaultDesc = "On";
+                    act.defaultLabel = "阻挡子弹";
+                    act.defaultDesc = "开启";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -684,8 +812,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchDirect();
                     act.icon = UI_DIRECT_OFF;
-                    act.defaultLabel = "Block Direct";
-                    act.defaultDesc = "Off";
+                    act.defaultLabel = "阻挡子弹";
+                    act.defaultDesc = "关闭";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -702,8 +830,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchIndirect();
                     act.icon = UI_INDIRECT_ON;
-                    act.defaultLabel = "Block Indirect";
-                    act.defaultDesc = "On";
+                    act.defaultLabel = "阻挡迫击炮弹";
+                    act.defaultDesc = "开启";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -716,8 +844,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchIndirect();
                     act.icon = UI_INDIRECT_OFF;
-                    act.defaultLabel = "Block Indirect";
-                    act.defaultDesc = "Off";
+                    act.defaultLabel = "阻挡迫击炮弹";
+                    act.defaultDesc = "关闭";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -734,8 +862,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchInterceptDropPod();
                     act.icon = UI_INTERCEPT_DROPPOD_ON;
-                    act.defaultLabel = "Intercept DropPod";
-                    act.defaultDesc = "On";
+                    act.defaultLabel = "阻挡空投仓";
+                    act.defaultDesc = "开启";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -748,8 +876,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchInterceptDropPod();
                     act.icon = UI_INTERCEPT_DROPPOD_OFF;
-                    act.defaultLabel = "Intercept DropPod";
-                    act.defaultDesc = "Off";
+                    act.defaultLabel = "阻挡空投仓";
+                    act.defaultDesc = "关闭";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -767,8 +895,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchVisual();
                     act.icon = UI_SHOW_ON;
-                    act.defaultLabel = "Show Visually";
-                    act.defaultDesc = "Show";
+                    act.defaultLabel = "显示护盾区域";
+                    act.defaultDesc = "显示护盾区域";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -781,8 +909,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                     //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                     act.action = () => this.SwitchVisual();
                     act.icon = UI_SHOW_OFF;
-                    act.defaultLabel = "Show Visually";
-                    act.defaultDesc = "Hide";
+                    act.defaultLabel = "隐藏护盾区域";
+                    act.defaultDesc = "隐藏护盾区域";
                     act.activateSound = SoundDef.Named("Click");
                     //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                     //act.groupKey = 689736;
@@ -796,8 +924,8 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
                 //act.action = () => Designator_Deconstruct.DesignateDeconstruct(this);
                 act.action = () => this.ApplyUpgrades();
                 act.icon = UI_LAUNCH_REPORT;
-                act.defaultLabel = "Apply Upgrades";
-                act.defaultDesc = "Apply Upgrades";
+                act.defaultLabel = "安装插件";
+                act.defaultDesc = "安装插件(放置在四周再点击此按钮)";
                 act.activateSound = SoundDef.Named("Click");
                 //act.hotKey = KeyBindingDefOf.DesignatorDeconstruct;
                 //act.groupKey = 689736;
@@ -921,6 +1049,13 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
         {
             base.PostExposeData();
 
+
+            Scribe_Values.Look(ref m_RechargeSpeed, "m_RechargeSpeed");
+            Scribe_Values.Look(ref m_DamageRate, "m_DamageRate");
+            Scribe_Values.Look(ref m_ExtraDamageRateOfEMP, "m_ExtraDamageRateOfEMP");
+            Scribe_Values.Look(ref m_ExtraDamageRateOfFlame, "m_ExtraDamageRateOfFlame");
+
+
             Scribe_Values.Look(ref m_FieldRadius_Requested, "m_FieldRadius_Requested");
             Scribe_Values.Look(ref m_BlockDirect_Requested, "m_BlockDirect_Requested");
             Scribe_Values.Look(ref m_BlockIndirect_Requested, "m_BlockIndirect_Requested");
@@ -930,9 +1065,9 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
             Scribe_Values.Look(ref m_RechargeTickDelayInterval, "m_shieldRechargeTickDelay");
             Scribe_Values.Look(ref m_RecoverWarmupDelayTicks, "m_shieldRecoverWarmup");
 
-            Scribe_Values.Look(ref m_ColourRed, "m_colourRed");
-            Scribe_Values.Look(ref m_ColourGreen, "m_colourGreen");
-            Scribe_Values.Look(ref m_ColourBlue, "m_colourBlue");
+            //Scribe_Values.Look(ref m_ColourRed, "m_colourRed");
+            //Scribe_Values.Look(ref m_ColourGreen, "m_colourGreen");
+            //Scribe_Values.Look(ref m_ColourBlue, "m_colourBlue");
 
             Scribe_Values.Look(ref m_WarmupTicksRemaining, "m_WarmupTicksRemaining");
 
