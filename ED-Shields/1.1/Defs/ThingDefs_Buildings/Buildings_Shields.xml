@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
-	<ThingDef Name="BuildingBase_Shield" ParentName="BuildingBase" Abstract="True">
-		<!-- Un Comment to allow building -->
-		<!--<designationCategory>Security</designationCategory>-->
+	<ThingDef Name="zzBuildingBase_Shield" Abstract="True">
+		<category>Building</category>
+		<soundImpactDefault>MetalHitImportant</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>RealtimeOnly</drawerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<designationCategory>Security</designationCategory>
+		<blockLight>false</blockLight>
+
+
 	</ThingDef>
 
 	<!-- Shield Building -->
 
-	<ThingDef ParentName="BuildingBase_Shield">
+	<ThingDef ParentName="zzBuildingBase_Shield">
 		<defName>Building_ShieldGenerator</defName>
-		<label>Shield Generator</label>
-		<description>Creates a Shield designed to protect critical ground installations. Can be upgraded with various enhancement modules.</description>
-		<thingClass>Jaxxa.EnhancedDevelopment.Shields.Shields.Building_Shield</thingClass>
+		<label>能量护盾</label>
+		<description>创建一个能量护盾装置,可以在放置后通过插件升级</description>
+		<thingClass>zhuzi.AdvancedEnergy.Shields.Shields.Building_Shield</thingClass>
 		<researchPrerequisites>
 			<li>Research_Shield</li>
 		</researchPrerequisites>
@@ -21,11 +29,8 @@
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(1,1)</drawSize>
 		</graphicData>
-
 		<uiIconPath>Things/ShieldBuilding_Blue</uiIconPath>
 		<altitudeLayer>Building</altitudeLayer>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<blockLight>true</blockLight>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<fillPercent>1</fillPercent>
@@ -40,174 +45,368 @@
 			<Flammability>1.0</Flammability>
 			<Beauty>-2</Beauty>
 			<Mass>50</Mass>
+
+			<zzShieldEnergyMax>150</zzShieldEnergyMax>
+			<zzShieldRechargePerSec>0.005</zzShieldRechargePerSec>
+			<zzShieldRadius>4</zzShieldRadius>
+
+			<zzShieldWarmupDelay>20</zzShieldWarmupDelay>
+			<zzShieldEnergyInit>0</zzShieldEnergyInit>
+
+			<zzShieldHurtRate>1</zzShieldHurtRate>
+			<zzShieldHurtRate_EMP>5</zzShieldHurtRate_EMP>
+			<zzShieldHurtRate_Flame>2.5</zzShieldHurtRate_Flame>
+			<zzShieldHurtRate_AOE>1</zzShieldHurtRate_AOE>
+			<zzShieldHurtRateExtra_EMP>0.15</zzShieldHurtRateExtra_EMP>
+
+			<zzShieldDefenceBullet>1</zzShieldDefenceBullet>
+			<zzShieldDefenceProjectile>0</zzShieldDefenceProjectile>
+			<zzShieldDefenceSky>0</zzShieldDefenceSky>
+			<zzShieldDefenceIFF>0</zzShieldDefenceIFF>
+
+			<zzPowerConsumption>200</zzPowerConsumption>
+			<zzPowerConsumptionRate>1</zzPowerConsumptionRate>
+			<zzPowerConsumptionCache>1</zzPowerConsumptionCache>
 		</statBases>
 		<costList>
 			<Steel>100</Steel>
-			<Silver>100</Silver>
-			<ComponentSpacer>10</ComponentSpacer>
+			<Silver>500</Silver>
+			<Plasteel>100</Plasteel>
+			<Gold>100</Gold>
+			<ComponentIndustrial>10</ComponentIndustrial>
+			<ComponentSpacer>2</ComponentSpacer>
 		</costList>
 		<inspectorTabs>
-			<li>Jaxxa.EnhancedDevelopment.Shields.Shields.ITab_ShieldGenerator</li>
+			<li>zhuzi.AdvancedEnergy.Shields.Shields.ITab_ShieldGenerator</li>
 		</inspectorTabs>
 		<passability>Impassable</passability>
 		<selectable>true</selectable>
 		<tickerType>Normal</tickerType>
 		<minifiedDef>MinifiedThing</minifiedDef>
 		<thingCategories>
-			<li>BuildingsSpecial</li>
-        </thingCategories>
+			<li>Buildings</li>
+		</thingCategories>
 		<comps>
 			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>1000</basePowerConsumption>
+				<compClass>zhuzi.AdvancedEnergy.Shields.Shields.CompStatPowerIdle</compClass>
+				<shortCircuitInRain>false</shortCircuitInRain>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="CompProperties_Facility">
 				<maxSimultaneous>1</maxSimultaneous>
 			</li>
-			<li Class="Jaxxa.EnhancedDevelopment.Shields.Shields.CompProperties_ShieldGenerator">
-
-				<m_FieldIntegrity_Initial>100</m_FieldIntegrity_Initial>
-				<m_FieldIntegrity_Max_Base>2000</m_FieldIntegrity_Max_Base>
-				<m_Field_Radius_Base>10</m_Field_Radius_Base>
-
-				<m_PowerRequired_Charging>1000</m_PowerRequired_Charging>
-				<m_PowerRequired_Standby>500</m_PowerRequired_Standby>
-
-				<m_RechargeTickDelayInterval_Base>15</m_RechargeTickDelayInterval_Base>
-				<m_RechargeAmmount_Base>1</m_RechargeAmmount_Base>
-				<m_RecoverWarmupDelayTicks_Base>900</m_RecoverWarmupDelayTicks_Base>
-
-				<m_BlockIndirect_Avalable>true</m_BlockIndirect_Avalable>
-				<m_BlockDirect_Avalable>true</m_BlockDirect_Avalable>
-				<m_InterceptDropPod_Avalable>false</m_InterceptDropPod_Avalable>
-				<m_StructuralIntegrityMode>false</m_StructuralIntegrityMode>
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_ShieldGenerator">
 			</li>
-		</comps>	
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>错峰用电</label>
+				<referenceId>zzIdlePower</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_Power</researchPrerequisite>
+				<workAmount>3000</workAmount>
+				<effectDescription>护盾在充满能量后的耗电量降低至20%\n但是在充能时的耗电量增加至150%\n请保证电网中有充足的电量储备,无法满足护盾功率时,护盾有立刻离线的可能</effectDescription>
+				<costList>
+					<Plasteel>100</Plasteel>
+					<Gold>100</Gold>
+					<ComponentSpacer>2</ComponentSpacer>
+				</costList>
+				<constructionSkillPrerequisite>9</constructionSkillPrerequisite>
+				<intSkillPrerequisite>9</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>先进储能</label>
+				<referenceId>zzEnergyUpgrade</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_Energy</researchPrerequisite>
+				<workAmount>1000</workAmount>
+				<effectDescription>提升护盾的能量上限,但是会增大耗电量,可以无限升级</effectDescription>
+				<costList>
+					<Silver>500</Silver>
+					<Gold>100</Gold>
+					<ComponentIndustrial>3</ComponentIndustrial>
+				</costList>
+				<statModifiers>
+					<zzPowerConsumptionRate>1.06</zzPowerConsumptionRate>
+				</statModifiers>
+				<statModifiersOffset>
+					<zzShieldEnergyMax>130</zzShieldEnergyMax>
+					<zzPowerConsumption>100</zzPowerConsumption>
+				</statModifiersOffset>
+				<unlimitedUpgrade>true</unlimitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>5</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>多级缓存</label>
+				<referenceId>zzEnergyCache</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_EnergyCache</researchPrerequisite>
+				<workAmount>1800</workAmount>
+				<effectDescription>给护盾增加多级缓存电容,降低护盾的能量逸散率,可以升级10次</effectDescription>
+				<costList>
+					<Gold>500</Gold>
+					<ComponentIndustrial>3</ComponentIndustrial>
+				</costList>
+				<statModifiers>
+					<zzPowerConsumptionCache>0.7</zzPowerConsumptionCache>
+				</statModifiers>
+				<limitedUpgrade>10</limitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>5</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>高速充能</label>
+				<referenceId>zzEnergyRecharge</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_Recharge</researchPrerequisite>
+				<workAmount>1800</workAmount>
+				<effectDescription>以高功率为代价提高护盾充能速度,可以无限升级</effectDescription>
+				<costList>
+					<Steel>150</Steel>
+					<ComponentIndustrial>10</ComponentIndustrial>
+					<ComponentSpacer>1</ComponentSpacer>
+				</costList>
+				<statModifiers>
+					<zzPowerConsumptionRate>1.5</zzPowerConsumptionRate>
+				</statModifiers>
+				<statModifiersOffset>
+					<zzShieldRechargePerSec>0.0025</zzShieldRechargePerSec>
+					<zzPowerConsumption>300</zzPowerConsumption>
+				</statModifiersOffset>
+				<unlimitedUpgrade>true</unlimitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>5</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>远程投射</label>
+				<referenceId>zzShieldRadius</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_Radius</researchPrerequisite>
+				<workAmount>1000</workAmount>
+				<effectDescription>提高护盾投射功率,让护盾可以笼罩更大的范围,最多升级96次</effectDescription>
+				<costList>
+					<Silver>200</Silver>
+					<ComponentIndustrial>5</ComponentIndustrial>
+					<ComponentSpacer>1</ComponentSpacer>
+				</costList>
+				<statModifiers>
+					<zzPowerConsumptionRate>1.06</zzPowerConsumptionRate>
+				</statModifiers>
+				<statModifiersOffset>
+					<zzShieldRadius>1</zzShieldRadius>
+					<zzPowerConsumption>100</zzPowerConsumption>
+				</statModifiersOffset>
+				<limitedUpgrade>96</limitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>5</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>快速启动</label>
+				<referenceId>zzShieldFasterInit</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_Init</researchPrerequisite>
+				<workAmount>1500</workAmount>
+				<effectDescription>减少护盾激活需要的时间,可以升级6次</effectDescription>
+				<costList>
+					<Plasteel>75</Plasteel>
+					<ComponentIndustrial>3</ComponentIndustrial>
+				</costList>
+				<statModifiersOffset>
+					<zzShieldWarmupDelay>-2</zzShieldWarmupDelay>
+				</statModifiersOffset>
+				<limitedUpgrade>6</limitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>5</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>初始能量</label>
+				<referenceId>zzShieldEnergyInit</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_Init</researchPrerequisite>
+				<workAmount>1500</workAmount>
+				<effectDescription>提高护盾在激活时拥有的初始能量,可升级5次</effectDescription>
+				<costList>
+					<Plasteel>75</Plasteel>
+					<ComponentSpacer>3</ComponentSpacer>
+				</costList>
+				<statModifiersOffset>
+					<zzShieldEnergyInit>0.01</zzShieldEnergyInit>
+				</statModifiersOffset>
+				<limitedUpgrade>5</limitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>5</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>EMP抗性</label>
+				<referenceId>zzShieldDefenceHurtEMP</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_DefenceHurt</researchPrerequisite>
+				<workAmount>2000</workAmount>
+				<effectDescription>降低EMP弹药对护盾的伤害效果,可升级5次</effectDescription>
+				<costList>
+					<Steel>200</Steel>
+				</costList>
+				<statModifiersOffset>
+					<zzShieldHurtRate_EMP>-0.5</zzShieldHurtRate_EMP>
+				</statModifiersOffset>
+				<limitedUpgrade>5</limitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>7</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>热能抗性</label>
+				<referenceId>zzShieldDefenceHurtFlame</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_DefenceHurt</researchPrerequisite>
+				<workAmount>2000</workAmount>
+				<effectDescription>降低热能弹药对护盾的伤害效果,可升级5次</effectDescription>
+				<costList>
+					<Steel>200</Steel>
+				</costList>
+				<statModifiersOffset>
+					<zzShieldHurtRate_Flame>-0.3</zzShieldHurtRate_Flame>
+				</statModifiersOffset>
+				<limitedUpgrade>5</limitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>7</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>爆破抗性</label>
+				<referenceId>zzShieldDefenceHurtAOE</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_DefenceHurtAOE</researchPrerequisite>
+				<workAmount>2500</workAmount>
+				<effectDescription>全面降低所有爆破AOE武器对护盾的伤害比例,可升级10次</effectDescription>
+				<costList>
+					<Plasteel>200</Plasteel>
+					<ComponentSpacer>2</ComponentSpacer>
+				</costList>
+				<statModifiersOffset>
+					<zzShieldHurtRate_AOE>-0.07</zzShieldHurtRate_AOE>
+				</statModifiersOffset>
+				<limitedUpgrade>10</limitedUpgrade>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>7</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>高级EMP抗性</label>
+				<referenceId>zzShieldDefenceHurtEMP2</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_DefenceHurtEMP</researchPrerequisite>
+				<workAmount>2500</workAmount>
+				<effectDescription>进一步提高护盾对EMP武器的抗性,可升级5次</effectDescription>
+				<costList>
+					<Plasteel>200</Plasteel>
+					<ComponentSpacer>2</ComponentSpacer>
+				</costList>
+				<statModifiersOffset>
+					<zzShieldHurtRateExtra_EMP>-0.02</zzShieldHurtRateExtra_EMP>
+				</statModifiersOffset>
+				<limitedUpgrade>5</limitedUpgrade>
+				<constructionSkillPrerequisite>7</constructionSkillPrerequisite>
+				<intSkillPrerequisite>9</intSkillPrerequisite>
+				<prerequisiteUpgradeId>zzShieldDefenceHurtEMP</prerequisiteUpgradeId>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>抛射物防御</label>
+				<referenceId>zzShieldDefenceProjectile</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_DefenceProjectile</researchPrerequisite>
+				<workAmount>3000</workAmount>
+				<effectDescription>提高护盾防御角度,使其可以阻挡炮弹之类的抛射物体</effectDescription>
+				<costList>
+					<ComponentIndustrial>10</ComponentIndustrial>
+					<ComponentSpacer>3</ComponentSpacer>
+				</costList>
+				<statModifiers>
+					<zzPowerConsumptionRate>1.5</zzPowerConsumptionRate>
+				</statModifiers>
+				<statModifiersOffset>
+					<zzShieldDefenceProjectile>1</zzShieldDefenceProjectile>
+				</statModifiersOffset>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>7</intSkillPrerequisite>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>天空防御</label>
+				<referenceId>zzShieldDefenceSky</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_DefenceSky</researchPrerequisite>
+				<workAmount>4000</workAmount>
+				<effectDescription>提高护盾防御角度,使其可以阻挡炮弹之类的抛射物体</effectDescription>
+				<costList>
+					<Gold>500</Gold>
+					<ComponentIndustrial>10</ComponentIndustrial>
+					<ComponentSpacer>3</ComponentSpacer>
+				</costList>
+				<statModifiers>
+					<zzPowerConsumptionRate>1.5</zzPowerConsumptionRate>
+				</statModifiers>
+				<statModifiersOffset>
+					<zzShieldDefenceSky>1</zzShieldDefenceSky>
+				</statModifiersOffset>
+				<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+				<intSkillPrerequisite>11</intSkillPrerequisite>
+				<prerequisiteUpgradeId>zzShieldDefenceProjectile</prerequisiteUpgradeId>
+			</li>
+
+			<li Class="zhuzi.AdvancedEnergy.Shields.Shields.CompProperties_Upgrade">
+				<label>敌我识别</label>
+				<referenceId>zzShieldDefenceIFF</referenceId>
+				<researchPrerequisite>Research_Shield_Upgrades_DefenceIFF</researchPrerequisite>
+				<workAmount>5000</workAmount>
+				<effectDescription>给护盾添加人工智能核心,让护盾可以识别敌我,不再阻挡友方的子弹,抛射物和空投仓</effectDescription>
+				<costList>
+					<Gold>500</Gold>
+	  				<AIPersonaCore>1</AIPersonaCore>
+					<ComponentIndustrial>15</ComponentIndustrial>
+					<ComponentSpacer>3</ComponentSpacer>
+				</costList>
+				<statModifiers>
+					<zzPowerConsumptionRate>1.8</zzPowerConsumptionRate>
+				</statModifiers>
+				<statModifiersOffset>
+					<zzShieldDefenceIFF>1</zzShieldDefenceIFF>
+				</statModifiersOffset>
+				<constructionSkillPrerequisite>9</constructionSkillPrerequisite>
+				<intSkillPrerequisite>13</intSkillPrerequisite>
+				<prerequisiteUpgradeId>zzShieldDefenceIFF</prerequisiteUpgradeId>
+			</li>
+
+
+
+		</comps>
 	</ThingDef>
 
 
-	<!-- Shield Upgrade Modules -->
 
-	<ThingDef Name="ShieldUpgradeModuleBase" ParentName="BuildingBase_Shield" Abstract="True">
-		<defName>ShieldUpgrade</defName>
-		<label>ShieldUpgrade</label>
-		<thingClass>Building</thingClass>
-		<description>Upgrades Shields.</description>
+	<ThingDef ParentName="MoteBase">
+		<defName>zz_Mote_BlastShield</defName>
 		<graphicData>
-			<texPath>Things/Building/Misc/MultiAnalyzer</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(1,1)</drawSize>
-			<damageData>
-				<rect>(0.15,0.15,1.7,1.7)</rect>
-			</damageData>
+			<texPath>Things/Mote/ShieldImpact</texPath>
+			<shaderType>TransparentPostLight</shaderType>
 		</graphicData>
-		<researchPrerequisites>
-			<li>Research_Shield_Upgrades</li>
-		</researchPrerequisites>
-		<size>(1,1)</size>
-		<rotatable>false</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>0.5</fillPercent>
-		<designationHotKey>Misc4</designationHotKey>
-		<canOverlapZones>false</canOverlapZones>
-		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
-		<statBases>
-			<MaxHitPoints>200</MaxHitPoints>
-			<WorkToBuild>10000</WorkToBuild>
-			<Mass>100</Mass>
-			<Flammability>1.0</Flammability>
-		</statBases>
-		<costList>
-			<Steel>100</Steel>
-			<Silver>100</Silver>
-			<ComponentSpacer>2</ComponentSpacer>
-		</costList>
-		<specialDisplayRadius>1.6</specialDisplayRadius>
-		<minifiedDef>MinifiedThing</minifiedDef>
-		<thingCategories>
-			<li>BuildingsSpecial</li>
-        </thingCategories>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<mote>
+			<solidTime>0</solidTime>
+			<fadeOutTime>0.2</fadeOutTime>
+		</mote>
 	</ThingDef>
 
-	<ThingDef ParentName="ShieldUpgradeModuleBase">
-		<defName>ShieldUpgradeModuleCapacitor</defName>
-		<label>Shield Upgrade: Capacitor</label>
-		<description>Shield Module: Capacitor
-This increases the maximum Shield Field Integrity of a Shield Generator. This allows it to absorb a greater number of impacts before going offline.</description>
-		<comps>
-			<li Class="Jaxxa.EnhancedDevelopment.Shields.Shields.CompProperties_ShieldUpgrade">
-				<FieldIntegrity_Increase>500</FieldIntegrity_Increase>
-				<Range_Increase>0</Range_Increase>
-				<PowerUsage_Increase>100</PowerUsage_Increase>
-				<DropPodIntercept>false</DropPodIntercept>
-			</li>
-		</comps>
-	</ThingDef>
+	<DamageDef ParentName="StunBase">
+		<defName>zz_ShieldExplosion</defName>
+		<label>Shield</label>
+		<deathMessage>{0} has glitched to death.</deathMessage>
+		<harmsHealth>false</harmsHealth>
+		<impactSoundType>Electric</impactSoundType>
+		<defaultDamage>0</defaultDamage>
+		<explosionSnowMeltAmount>0</explosionSnowMeltAmount>
+		<explosionCellMote>zz_Mote_BlastShield</explosionCellMote>
+		<explosionColorEdge>(0.8, 0.8, 0.8, 0.8)</explosionColorEdge>
+		<explosionInteriorMote>Mote_ElectricalSpark</explosionInteriorMote>
+		<soundExplosion>Interceptor_BlockProjectile</soundExplosion>
+	</DamageDef>
 
-	<ThingDef ParentName="ShieldUpgradeModuleBase">
-		<defName>ShieldUpgradeModuleHorizontalProjector</defName>
-		<label>Shield Upgrade: Horizontal Projector</label>
-		<description>Shield Module: Horizontal Projector
-This increases the maximum distance that a Shield Field can be extended from the Shield Generator, increasing the area that can be effectively protected by a single Shield Generator.</description>
-		<comps>
-			<li Class="Jaxxa.EnhancedDevelopment.Shields.Shields.CompProperties_ShieldUpgrade">
-				<FieldIntegrity_Increase>0</FieldIntegrity_Increase>
-				<Range_Increase>5</Range_Increase>
-				<PowerUsage_Increase>100</PowerUsage_Increase>
-				<DropPodIntercept>false</DropPodIntercept>
-			</li>
-		</comps>
-	</ThingDef>
 
-	<ThingDef ParentName="ShieldUpgradeModuleBase">
-		<defName>ShieldUpgradeModuleVerticalProjector</defName>
-		<label>Shield Upgrade: Vertical Projector</label>
-		<description>Shield Module: Vertical Projector
-This allows the shield field to be extended vertically to prevent the safe landing of Drop Pods by interrupting the systems controlling their decent, causing them to violently impact the ground.</description>
-		<comps>
-			<li Class="Jaxxa.EnhancedDevelopment.Shields.Shields.CompProperties_ShieldUpgrade">
-				<FieldIntegrity_Increase>0</FieldIntegrity_Increase>
-				<Range_Increase>0</Range_Increase>
-				<PowerUsage_Increase>100</PowerUsage_Increase>
-				<DropPodIntercept>true</DropPodIntercept>
-			</li>
-		</comps>
-	</ThingDef>
-
-	<ThingDef ParentName="ShieldUpgradeModuleBase">
-		<defName>ShieldUpgradeModuleOrbitalDatalink</defName>
-		<label>Shield Upgrade: Orbital Datalink</label>
-		<description>Shield Module: Orbital Datalink
-This links the Shield Generator to enhanced tactical sensors placed in orbit to allow the differentiation of friendly and hostile contacts to prevent hampering friendly operations, including both weapons fire and the deployment of DropPods.</description>
-		<comps>
-			<li Class="Jaxxa.EnhancedDevelopment.Shields.Shields.CompProperties_ShieldUpgrade">
-				<FieldIntegrity_Increase>0</FieldIntegrity_Increase>
-				<Range_Increase>0</Range_Increase>
-				<PowerUsage_Increase>100</PowerUsage_Increase>
-				<DropPodIntercept>false</DropPodIntercept>
-				<IdentifyFriendFoe>true</IdentifyFriendFoe>
-			</li>
-		</comps>
-	</ThingDef>
-
-	<ThingDef ParentName="ShieldUpgradeModuleBase">
-		<defName>ShieldUpgradeModulePowerConverter</defName>
-		<label>Shield Upgrade: Power Converter</label>
-		<description>Shield Module: Power Converter
-This allows the Shield Generator to remain functioning in the event that main power is interrupted at the expense of a slow decay of the Shield Field Integrity.</description>
-		<comps>
-			<li Class="Jaxxa.EnhancedDevelopment.Shields.Shields.CompProperties_ShieldUpgrade">
-				<FieldIntegrity_Increase>0</FieldIntegrity_Increase>
-				<Range_Increase>0</Range_Increase>
-				<PowerUsage_Increase>0</PowerUsage_Increase>
-				<DropPodIntercept>false</DropPodIntercept>
-				<SlowDischarge>true</SlowDischarge>
-			</li>
-		</comps>
-	</ThingDef>
 
 </Defs>

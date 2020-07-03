@@ -3,8 +3,8 @@
 
 	<ResearchProjectDef>
 		<defName>Research_Shield</defName>
-		<label>Shield Generation</label>
-		<description>Unlocks the Technology behind the production of Shield Generators. These use power to generate a particle barrier for the purpose of intercepting weapon fire.</description>
+		<label>能量护盾</label>
+		<description>解锁能量护盾装置制作</description>
 		<baseCost>4000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -16,9 +16,9 @@
 	
 	<ResearchProjectDef>
 		<defName>Research_Shield_Upgrades</defName>
-		<label>Shield Upgrades</label>
-		<description>Unlocks the Ability to improve Shield Generators with Upgrades.</description>
-		<baseCost>4000</baseCost>
+		<label>护盾升级插件</label>
+		<description>解锁护盾升级插件制作.</description>
+		<baseCost>2000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
 			<li>Research_Shield</li>
@@ -26,7 +26,163 @@
 		<researchViewX>18</researchViewX>
 		<researchViewY>2.5</researchViewY>
 	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_Energy</defName>
+		<label>先进储能</label>
+		<description>使用更先进的电容器来提高护盾的能量上限</description>
+		<baseCost>1300</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades</li>
+		</prerequisites>
+		<researchViewX>20</researchViewX>
+		<researchViewY>2.5</researchViewY>
+	</ResearchProjectDef>
 	
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_DefenceProjectile</defName>
+		<label>抛射物防御</label>
+		<description>提高护盾防御角度,使其可以阻挡炮弹之类的抛射物体</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades</li>
+		</prerequisites>
+		<researchViewX>19</researchViewX>
+		<researchViewY>3</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_DefenceSky</defName>
+		<label>天空防御</label>
+		<description>使护盾可以拦截天上掉落的大质量物体</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades_DefenceProjectile</li>
+		</prerequisites>
+		<researchViewX>20</researchViewX>
+		<researchViewY>4</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_DefenceIFF</defName>
+		<label>敌我识别</label>
+		<description>给护盾添加人工智能核心,让护盾可以识别敌我,不再阻挡友方的子弹,抛射物和空投仓</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades_DefenceSky</li>
+		</prerequisites>
+		<researchViewX>21</researchViewX>
+		<researchViewY>5</researchViewY>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_Power</defName>
+		<label>错峰用电</label>
+		<description>优化护盾的供电策略,降低护盾待机时的功率</description>
+		<baseCost>2300</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades_Energy</li>
+		</prerequisites>
+		<researchViewX>21</researchViewX>
+		<researchViewY>2.5</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_EnergyCache</defName>
+		<label>多级缓存</label>
+		<description>给护盾增加多级缓存电容,降低护盾的能量逸散率</description>
+		<baseCost>3500</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades_Energy</li>
+		</prerequisites>
+		<researchViewX>21</researchViewX>
+		<researchViewY>1.5</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_Recharge</defName>
+		<label>高速充能</label>
+		<description>以高功率为代价提高护盾充能速度</description>
+		<baseCost>3500</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades_Energy</li>
+		</prerequisites>
+		<researchViewX>21</researchViewX>
+		<researchViewY>3.5</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_Radius</defName>
+		<label>远程投射</label>
+		<description>提高护盾投射功率,让护盾可以笼罩更大的范围</description>
+		<baseCost>1500</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades</li>
+		</prerequisites>
+		<researchViewX>20</researchViewX>
+		<researchViewY>3.5</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_Init</defName>
+		<label>启动流程优化</label>
+		<description>减少护盾激活需要的时间,并让护盾在激活时拥有一定的初始能量</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades</li>
+		</prerequisites>
+		<researchViewX>20</researchViewX>
+		<researchViewY>0.5</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_DefenceHurt</defName>
+		<label>护盾抗性</label>
+		<description>研究各种弹药的原理,给护盾加装针对各种类型弹道的缓冲装置来降低伤害</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades</li>
+		</prerequisites>
+		<researchViewX>20</researchViewX>
+		<researchViewY>4.5</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_DefenceHurtAOE</defName>
+		<label>爆破抗性</label>
+		<description>全面降低所有爆破AOE武器对护盾的伤害比例</description>
+		<baseCost>5000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades_DefenceHurt</li>
+		</prerequisites>
+		<researchViewX>21</researchViewX>
+		<researchViewY>4.5</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef>
+		<defName>Research_Shield_Upgrades_DefenceHurtEMP</defName>
+		<label>EMP抗性升级</label>
+		<description>进一步提高护盾对EMP武器的抗性</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Research_Shield_Upgrades_DefenceHurt</li>
+		</prerequisites>
+		<researchViewX>21</researchViewX>
+		<researchViewY>5.5</researchViewY>
+	</ResearchProjectDef>
+
 
 </Defs>
 

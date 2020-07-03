@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <TabShield>能量护盾</TabShield>
+
+  <Upgrade_statModifierCategory>完成升级</Upgrade_statModifierCategory>
+  <Upgrade_labelPrefix>升级：{0}</Upgrade_labelPrefix>
+  <Upgrade_descriptionEffects>效果：</Upgrade_descriptionEffects>
+  <Upgrade_descriptionCost>所需材料：</Upgrade_descriptionCost>
+  <Upgrade_prerequisites>先决条件：</Upgrade_prerequisites>
+  <Upgrade_prerequisitesResearch>研究（{0}）</Upgrade_prerequisitesResearch>
+  <Upgrade_prerequisitesUpgrade>升级（{0}）</Upgrade_prerequisitesUpgrade>
+  <Upgrade_prerequisitesSkill>建造技能({0})</Upgrade_prerequisitesSkill>
+  <Upgrade_prerequisitesSkill_int>智识技能({0})</Upgrade_prerequisitesSkill_int>
+  <Upgrade_workProgress>工作进度：{0}%</Upgrade_workProgress>
+  <Upgrade_deliveredIngredients>装载的内容：{0}</Upgrade_deliveredIngredients>
+  <Upgrade_installedUpgrades>已安装的升级：</Upgrade_installedUpgrades>
+  <Upgrade_missingMaterials>需要 {0}x {1}</Upgrade_missingMaterials>
+  <Upgrade_uneqip_message>从存储中删除以进行升级。</Upgrade_uneqip_message>
+  <Upgrade_needSkills_message>安装此升级模块需要最低建筑技能为{0}和智识技能为{1}的殖民者。</Upgrade_needSkills_message>
+
+  <DefenceBullet>阻挡子弹</DefenceBullet>
+  <DefenceProjectile>阻挡抛射物</DefenceProjectile>
+  <DefenceSky>天空防御</DefenceSky>
+  <DefenceIFF>敌我识别</DefenceIFF>
+  <ShowShieldArea>显示护盾区域</ShowShieldArea>
+  <HideShieldArea>隐藏护盾区域</HideShieldArea>
+
+  <Auto_TurnOn>自动开启</Auto_TurnOn>
+  <TurnOn>开启</TurnOn>
+  <TurnOff>关闭</TurnOff>
+  <Shield_Energy_Current>充能: {0}/{1}</Shield_Energy_Current>
+  <Shield_Init>{0}秒后激活</Shield_Init>
+  <Shield_Inactive>供电不足</Shield_Inactive>
+  <Shield_Radius>护盾半径 当前:{0} 最大可用:{1}</Shield_Radius>
+  <Not_Installed>未安装升级插件</Not_Installed>
+
+
+</LanguageData>

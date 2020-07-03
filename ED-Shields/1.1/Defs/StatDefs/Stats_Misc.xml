@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <StatCategoryDef>
+    <defName>zzShield_stat</defName>
+    <label>护盾参数</label>
+    <displayOrder>70</displayOrder>
+  </StatCategoryDef>
+
+	<StatDef Name="zzBaseMiscStat" Abstract="True">
+		<category>zzShield_stat</category>
+		<defaultBaseValue>0</defaultBaseValue>
+		<toStringStyle>FloatOne</toStringStyle>
+		<showIfUndefined>false</showIfUndefined>
+		<showOnDefaultValue>false</showOnDefaultValue>
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldEnergyMax</defName>
+		<label>能量上限</label>
+		<description>护盾在破裂之前可以承受的伤害冲击量,EMP、热能伤害和范围伤害会对护盾造成大量额外的冲击</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>Integer</toStringStyle>
+    	<displayPriorityInCategory>550</displayPriorityInCategory>
+	</StatDef>
+
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldRechargePerSec</defName>
+		<label>充能速度</label>
+		<description>护盾每秒钟可以回复的能量百分比</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>540</displayPriorityInCategory>
+	</StatDef>
+	
+	
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldRadius</defName>
+		<label>最大半径</label>
+		<description>护盾防御的最大半径</description>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>1</minValue>
+		<toStringStyle>Integer</toStringStyle>
+    	<displayPriorityInCategory>530</displayPriorityInCategory>
+	</StatDef>
+
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldWarmupDelay</defName>
+		<label>激活时间</label>
+		<description>护盾初始化和被击破后重启的时间</description>
+		<defaultBaseValue>8</defaultBaseValue>
+		<minValue>3</minValue>
+		<toStringStyle>FloatOne</toStringStyle>
+		<showOnDefaultValue>true</showOnDefaultValue>
+    	<displayPriorityInCategory>520</displayPriorityInCategory>
+	</StatDef>
+
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldEnergyInit</defName>
+		<label>初始能量</label>
+		<description>护盾在刚激活时拥有的能量百分比</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showOnDefaultValue>true</showOnDefaultValue>
+    	<displayPriorityInCategory>510</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldHurtRate</defName>
+		<label>伤害修正</label>
+		<description>护盾在受到伤害时的最终修正系数</description>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>450</displayPriorityInCategory>
+		<!-- <alwaysHide>true</alwaysHide> -->
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldHurtRate_EMP</defName>
+		<label>EMP修正</label>
+		<description>护盾在受到EMP伤害时的修正系数</description>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>440</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldHurtRate_Flame</defName>
+		<label>热能修正</label>
+		<description>护盾在受到热能伤害时的修正系数</description>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>430</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldHurtRate_AOE</defName>
+		<label>AOE修正</label>
+		<description>护盾在受到AOE伤害时的修正系数</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>420</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldHurtRateExtra_EMP</defName>
+		<label>EMP修正2</label>
+		<description>护盾在受到EMP伤害时额外损失的当前能量百分比</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>410</displayPriorityInCategory>
+	</StatDef>
+
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldDefenceBullet</defName>
+		<label>子弹防御</label>
+		<description>抵挡平射的子弹,此值非0时生效</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>Integer</toStringStyle>
+    	<displayPriorityInCategory>350</displayPriorityInCategory>
+		<showOnDefaultValue>true</showOnDefaultValue>
+	</StatDef>
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldDefenceProjectile</defName>
+		<label>抛射防御</label>
+		<description>抵挡抛射物体(可穿越墙壁的抛射物),此值非0时生效</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>Integer</toStringStyle>
+    	<displayPriorityInCategory>340</displayPriorityInCategory>
+		<showOnDefaultValue>true</showOnDefaultValue>
+	</StatDef>
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldDefenceSky</defName>
+		<label>天空防御</label>
+		<description>拦截天空中落下的物体(空投仓),此值非0时生效</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>Integer</toStringStyle>
+    	<displayPriorityInCategory>330</displayPriorityInCategory>
+		<showOnDefaultValue>true</showOnDefaultValue>
+	</StatDef>
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzShieldDefenceIFF</defName>
+		<label>敌我识别</label>
+		<description>识别友军火力,不再阻挡来自友方的投射物和空投,此值非0时生效</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>Integer</toStringStyle>
+    	<displayPriorityInCategory>320</displayPriorityInCategory>
+		<showOnDefaultValue>true</showOnDefaultValue>
+	</StatDef>
+
+
+
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzPowerConsumption</defName>
+		<label>基础耗电量</label>
+		<description>护盾的基础耗电量,实际耗电量=基础耗电量*耗电量乘数*护盾升级修正系数</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>FloatMaxOne</toStringStyle>
+    	<displayPriorityInCategory>250</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzPowerConsumptionRate</defName>
+		<label>耗电量乘数</label>
+		<description>护盾的耗电量乘数,实际耗电量=基础耗电量*耗电量乘数*护盾升级修正系数</description>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>240</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef ParentName="zzBaseMiscStat">
+		<defName>zzPowerConsumptionCache</defName>
+		<label>能量逸散</label>
+		<description>护盾在电量不足时每秒逸散的能量</description>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+    	<displayPriorityInCategory>230</displayPriorityInCategory>
+	</StatDef>
+
+</Defs>
