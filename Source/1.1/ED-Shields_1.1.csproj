@@ -7,8 +7,8 @@
     <ProjectGuid>{E5A32544-0FAE-4EA1-AC7B-100B96EEC6E3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jaxxa.EnhancedDevelopment.Shields</RootNamespace>
-    <AssemblyName>ED-Shields</AssemblyName>
+    <RootNamespace>zhuzi.AdvancedEnergy.Shields</RootNamespace>
+    <AssemblyName>AdvancedEnergy-Shield</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -41,6 +41,9 @@
       <HintPath>RW-DLL\1.1\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HugsLib">
+      <HintPath>..\..\..\packages\HugsLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
@@ -66,15 +69,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\JobDriver_InstallUpgrade.cs" />
+    <Compile Include="AI\WorkGiver_InstallUpgrade.cs" />
+    <Compile Include="Comps\Comp_StatPowerIdle.cs" />
+    <Compile Include="Comps\statModifiers2.cs" />
+    <Compile Include="Comps\StatPart_Upgradeable.cs" />
+    <Compile Include="Manager.cs" />
+    <Compile Include="Patch\Patches\ThingDef_ConnectToPower_Patch.cs" />
+    <Compile Include="RemoteTechUtility.cs" />
+    <Compile Include="CachedValue.cs" />
+    <Compile Include="Comps\CompProperites_Upgrade.cs" />
+    <Compile Include="Comps\Comp_Upgrade.cs" />
+    <Compile Include="Comps\Comp_StatPower.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="Patch\Patch.cs" />
     <Compile Include="Patch\Patcher.cs" />
     <Compile Include="Patch\Patches\PatchProjectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shields\Building_Shield.cs" />
-    <Compile Include="Shields\CompProperties_ShieldGenerator.cs" />
-    <Compile Include="Shields\CompProperties_ShieldUpgrade.cs" />
-    <Compile Include="Shields\Comp_ShieldGenerator.cs" />
-    <Compile Include="Shields\Comp_ShieldUpgrade.cs" />
+    <Compile Include="Comps\CompProperties_ShieldGenerator.cs" />
+    <Compile Include="Comps\Comp_ShieldGenerator.cs" />
     <Compile Include="Shields\EnumShieldStatus.cs" />
     <Compile Include="Shields\ITab_ShieldGenerator.cs" />
     <Compile Include="Shields\ShieldManagerMapComp.cs" />

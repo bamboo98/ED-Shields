@@ -7,9 +7,9 @@ using System.Text;
 using Verse;
 using UnityEngine;
 using HarmonyLib;
-using Jaxxa.EnhancedDevelopment.Shields.Shields;
+using zhuzi.AdvancedEnergy.Shields.Shields;
 
-namespace Jaxxa.EnhancedDevelopment.Shields.Patch.Patches
+namespace zhuzi.AdvancedEnergy.Shields.Patch.Patches
 {
     class PatchProjectile : Patch
     {

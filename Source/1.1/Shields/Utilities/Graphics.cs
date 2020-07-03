@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace Jaxxa.EnhancedDevelopment.Shields.Shields.Utilities
+namespace zhuzi.AdvancedEnergy.Shields.Shields.Utilities
 {
     public static class Graphics
     {

@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using RimWorld;
 using Verse;
 using HarmonyLib;
 
-namespace Jaxxa.EnhancedDevelopment.Shields.Patch
+namespace zhuzi.AdvancedEnergy.Shields.Patch
 {
     [StaticConstructorOnStartup]
     internal class Patcher
     {
         static Patcher()
         {
-            string _LogLocation = "Jaxxa.EnhancedDevelopment.Shields.Patch.Patcher(): ";
+            string _LogLocation = "zhuzi.AdvancedEnergy.Shields.Patch.Patcher(): ";
 
             Log.Message(_LogLocation + "Starting.");
 
@@ -22,7 +20,7 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Patch
             _Patches.Add(new Patches.PatchProjectile());
 
             //Create Harmony Instance
-            Harmony _Harmony = new HarmonyLib.Harmony("Jaxxa.EnhancedDevelopment.Shields");
+            Harmony _Harmony = new HarmonyLib.Harmony("zhuzi.AdvancedEnergy.Shields");
 
             
             //Iterate Patches

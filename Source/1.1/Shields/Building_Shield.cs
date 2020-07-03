@@ -9,15 +9,33 @@ using RimWorld;
 using Verse;
 using Verse.Sound;
 
+using zhuzi.AdvancedEnergy.Shields.Patch;
+
 //using EnhancedDevelopment.Shields.ShieldUtils;
 
-namespace Jaxxa.EnhancedDevelopment.Shields.Shields
+namespace zhuzi.AdvancedEnergy.Shields.Shields
 {
     [StaticConstructorOnStartup]
     public class Building_Shield : Building
     {
 
+        private CompPowerTrader powerComp;
+
+
         #region Methods
+
+
+        public bool PowerOn
+        {
+            get { return powerComp == null || powerComp.PowerOn; }
+        }
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            powerComp = GetComp<CompPowerTrader>();
+            //Log.Message("电源组件获取" + (powerComp == null ? "失败" : PowerOn.ToString()));
+        }
 
         public override string GetInspectString()
         {

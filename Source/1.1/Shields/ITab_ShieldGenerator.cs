@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace Jaxxa.EnhancedDevelopment.Shields.Shields
+namespace zhuzi.AdvancedEnergy.Shields.Shields
 {
     class ITab_ShieldGenerator : ITab
     {
@@ -80,83 +80,80 @@ namespace Jaxxa.EnhancedDevelopment.Shields.Shields
 
 
             listing_Standard.GapLine(12f);
-            listing_Standard.Label("护盾能量: " + (int)this.SelectedCompShieldGenerator.FieldIntegrity_Current + " / " + this.SelectedCompShieldGenerator.m_FieldIntegrity_Max);
+            listing_Standard.Label("Shield_Energy_Current".Translate(Mathf.FloorToInt(SelectedCompShieldGenerator.ShieldEnergyCurrent), SelectedCompShieldGenerator.ShieldEnergyMax));
 
             listing_Standard.Gap(12f);
 
-            listing_Standard.Label("护盾半径: " + this.SelectedCompShieldGenerator.m_FieldRadius_Requested + " / " + this.SelectedCompShieldGenerator.m_FieldRadius_Avalable);
-            listing_Standard.IntAdjuster(ref this.SelectedCompShieldGenerator.m_FieldRadius_Requested, 1, 1);
-            if (this.SelectedCompShieldGenerator.m_FieldRadius_Requested > this.SelectedCompShieldGenerator.m_FieldRadius_Avalable)
+            listing_Standard.Label("Shield_Radius".Translate(SelectedCompShieldGenerator.ShieldRadius_Current, SelectedCompShieldGenerator.ShieldRadiusMax));
+
+            listing_Standard.IntAdjuster(ref SelectedCompShieldGenerator.zzShieldRadius_Current, 1, 1);
+            if (SelectedCompShieldGenerator.ShieldRadius_Current > SelectedCompShieldGenerator.ShieldRadiusMax)
             {
-                this.SelectedCompShieldGenerator.m_FieldRadius_Requested = this.SelectedCompShieldGenerator.m_FieldRadius_Avalable;
+                SelectedCompShieldGenerator.zzShieldRadius_Current = SelectedCompShieldGenerator.ShieldRadiusMax;
             }
 
-            //Direct
-            if (this.SelectedCompShieldGenerator.BlockDirect_Active())
+            if (this.SelectedCompShieldGenerator.ShieldDefenceBulletActive)
             {
-                if (listing_Standard.ButtonText("阻挡子弹:开启"))
+                if (listing_Standard.ButtonText("DefenceBullet".Translate() + ": " + "TurnOn".Translate()))
                 {
-                    this.SelectedCompShieldGenerator.SwitchDirect();
+                    this.SelectedCompShieldGenerator.FlickShieldDefenceBullet();
                 }
             } 
             else
             {
-                if (listing_Standard.ButtonText("阻挡子弹:关闭"))
+                if (listing_Standard.ButtonText("DefenceBullet".Translate() + ": " + "TurnOff".Translate()))
                 {
-                    this.SelectedCompShieldGenerator.SwitchDirect();
+                    this.SelectedCompShieldGenerator.FlickShieldDefenceBullet();
                 }
 
             }
 
-            //Indirect
-            if (this.SelectedCompShieldGenerator.BlockIndirect_Active())
-            {
-                if (listing_Standard.ButtonText("阻挡炮弹:开启"))
+            if (this.SelectedCompShieldGenerator.ShieldDefenceProjectileInstall)
+                if (this.SelectedCompShieldGenerator.ShieldDefenceProjectileActive)
                 {
-                    this.SelectedCompShieldGenerator.SwitchIndirect();
-                }
-            }
-            else
-            {
-                if (listing_Standard.ButtonText("阻挡炮弹:关闭"))
-                {
-                    this.SelectedCompShieldGenerator.SwitchIndirect();
-                }
-
-            }
-
-            if (this.SelectedCompShieldGenerator.IsInterceptDropPod_Avalable())
-            {
-                if (this.SelectedCompShieldGenerator.IntercepDropPod_Active())
-                {
-                    if (listing_Standard.ButtonText("阻挡空投仓:开启"))
+                    if (listing_Standard.ButtonText("DefenceProjectile".Translate() + ": " + "TurnOn".Translate()))
                     {
-                        this.SelectedCompShieldGenerator.SwitchInterceptDropPod();
+                        this.SelectedCompShieldGenerator.FlickShieldDefenceProjectile();
                     }
                 }
                 else
                 {
-                    if (listing_Standard.ButtonText("阻挡空投仓:关闭"))
+                    if (listing_Standard.ButtonText("DefenceProjectile".Translate() + ": " + "TurnOff".Translate()))
                     {
-                        this.SelectedCompShieldGenerator.SwitchInterceptDropPod();
+                        this.SelectedCompShieldGenerator.FlickShieldDefenceProjectile();
                     }
 
                 }
-                               
+            else
+                listing_Standard.ButtonText("DefenceProjectile".Translate() + ": " + "Not_Installed".Translate());
+
+            if (this.SelectedCompShieldGenerator.ShieldDefenceSkyInstall)
+                if (this.SelectedCompShieldGenerator.ShieldDefenceSkyActive)
+                {
+                    if (listing_Standard.ButtonText("DefenceSky".Translate() + ": " + "TurnOn".Translate()))
+                    {
+                        this.SelectedCompShieldGenerator.FlickShieldDefenceSky();
+                    }
+                }
+                else
+                {
+                    if (listing_Standard.ButtonText("DefenceSky".Translate() + ": " + "TurnOff".Translate()))
+                    {
+                        this.SelectedCompShieldGenerator.FlickShieldDefenceSky();
+                    }
+
+                }
+            else
+                listing_Standard.ButtonText("DefenceSky".Translate() + ": " + "Not_Installed".Translate());
+
+            if (SelectedCompShieldGenerator.ShieldDefenceIFFInstall)
+            {
+                listing_Standard.ButtonText("DefenceIFF".Translate() + ": " + "Auto_TurnOn".Translate());
+
             }
             else
             {
-                listing_Standard.Label("阻挡空投仓 未升级");
-            }
-
-            if (this.SelectedCompShieldGenerator.IdentifyFriendFoe_Active())
-            {
-                listing_Standard.Label("区分友军火力 开启");
-
-            }
-            else
-            {
-                listing_Standard.Label("区分友军火力 关闭");
+                listing_Standard.ButtonText("DefenceIFF".Translate() + ": " + "Not_Installed".Translate());
             }
 
             listing_Standard.End();

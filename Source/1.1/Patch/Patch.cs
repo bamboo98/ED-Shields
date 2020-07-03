@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 
-namespace Jaxxa.EnhancedDevelopment.Shields.Patch
+namespace zhuzi.AdvancedEnergy.Shields.Patch
 {
     abstract class Patch
     {

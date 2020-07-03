@@ -8,7 +8,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 
-namespace Jaxxa.EnhancedDevelopment.Shields.Shields
+namespace zhuzi.AdvancedEnergy.Shields.Shields
 {
     [StaticConstructorOnStartup]
     class ShieldManagerMapComp : MapComponent
